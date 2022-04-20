@@ -11,46 +11,31 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 public class TC002_Post_Request {
-	
-	BaseClass base;
-	String endpoint;
-	String param;
-	
-	@BeforeTest
-	public void setup() throws Exception {
-		base = new BaseClass();
-		endpoint = base.pro.getProperty("entry");
-		param = base.pro.getProperty("create");
-		System.out.println(endpoint+param);
-			
-	}
-	
+
 	@Test
 	public void postRequest() {
-	RestAssured.baseURI=endpoint;
+	RestAssured.baseURI="https://reqres.in/api";
 	RequestSpecification req = RestAssured.given();
-	
+
 	JSONObject obj = new JSONObject();
 	obj.put("name", "Indu");
-	obj.put("job", "SDET");
-	obj.put("id", "487");
-	obj.put("mail", "induindu@gmail.com");
-	
+	obj.put("job", "SE");
+
 	req.header("Content-Type","application/json; ");
-	
+
 	req.body(obj.toString());
-	
-	Response res=req.request(Method.POST,param);
-	
+
+	Response res=req.request(Method.POST,"/users");
+
 	//print response
-	
+
 	String body = res.body().asPrettyString();
 	System.out.println(body);
-	
+
 	//status code
 	int code = res.statusCode();
 	System.out.println("STATUS CODE : "  +code);
-	
+
 	String msg = res.statusLine();
 	System.out.println("MESSAGE" +msg);
 

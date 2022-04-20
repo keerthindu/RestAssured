@@ -1,9 +1,10 @@
-import java.io.FileNotFoundException;
 
+
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import Base.BaseClass;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -12,31 +13,13 @@ import junit.framework.Assert;
 
 
 public class TC001_GetRequest  {
-	BaseClass base;
-	String endpoint;
-	String param;
-	String epoint;
-	
-	@BeforeTest
-	public void setup() throws Exception {
-		base=new BaseClass();
-		  endpoint = base.pro.getProperty("url");
-		System.out.println(endpoint);
-		 param = base.pro.getProperty("parameter");
-		System.out.println(param);
-		
-		 epoint = endpoint+param;
-		System.out.println(epoint);
-		
-	}
-	
-	
+
 	@Test
 	void getDetails()  {
 		
-		RestAssured.baseURI=endpoint;
+		RestAssured.baseURI="https://reqres.in/api/users";
 		RequestSpecification req = RestAssured.given();
-		Response res = req.request(Method.GET,param);
+		Response res = req.request(Method.GET,"/2");
 		
 		//Response body validation
 		String body = res.getBody().asPrettyString();
@@ -51,6 +34,21 @@ public class TC001_GetRequest  {
 		String statusmsg =  res.getStatusLine();
 		System.out.println("Status Line is:" +statusmsg);
 		Assert.assertEquals("HTTP/1.1 200 OK", statusmsg);
+
+		//Header validation
+		String contentType = res.header("Content-Type");
+		System.out.println("Header is" + contentType);
+		Assert.assertEquals("application/json; charset=utf-8",contentType);
+
+		//print all headers
+//		String headers = res.getHeaders().toString();
+		Headers allheads = res.getHeaders();
+
+		for(Header head : allheads){
+			System.out.println(head.getName()+ "       " + head.getValue());
+		}
+
+
 	
 	}
 
